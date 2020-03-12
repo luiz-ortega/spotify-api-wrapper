@@ -46,6 +46,21 @@ describe('Spotify Wrapper', () => {
       const artists = search();
 
       expect(fetchedStub).to.have.been.calledOnce;
+
+      fetchedStub.restore();
+    });
+
+    it('should receive the correct url to fetch', () => {
+      const fetchedStub = sinon.stub(global, 'fetch');
+      const artists = search('beatles', 'artist');
+
+      expect(fetchedStub).to.have.been.been
+        .calledWith('https://api.spotify.com/v1/search?q=beatles&type=artist');
+
+      const albums = search('beatles', 'album');
+
+      expect(fetchedStub).to.have.been.been
+        .calledWith('https://api.spotify.com/v1/search?q=beatles&type=album');
     });
   });
 });
