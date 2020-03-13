@@ -41,26 +41,40 @@ describe('Spotify Wrapper', () => {
   });
 
   describe('Generic Search', () => {
-    it('should call fetch function', () => {
-      const fetchedStub = sinon.stub(global, 'fetch');
-      const artists = search();
+    let fetchedStub;
 
-      expect(fetchedStub).to.have.been.calledOnce;
+    beforeEach(() => {
+      fetchedStub = sinon.stub(global, 'fetch');
+    });
 
+    afterEach(() => {
       fetchedStub.restore();
     });
 
+    it('should call fetch function', () => {
+      const artists = search();
+
+      expect(fetchedStub).to.have.been.calledOnce;
+    });
+
     it('should receive the correct url to fetch', () => {
-      const fetchedStub = sinon.stub(global, 'fetch');
-      const artists = search('beatles', 'artist');
+      context('passing one type', () => {
+        const artists = search('beatles', 'artist');
 
-      expect(fetchedStub).to.have.been.been
-        .calledWith('https://api.spotify.com/v1/search?q=beatles&type=artist');
+        expect(fetchedStub).to.have.been
+          .calledWith('https://api.spotify.com/v1/search?q=beatles&type=artist');
 
-      const albums = search('beatles', 'album');
+        const albums = search('beatles', 'album');
 
-      expect(fetchedStub).to.have.been.been
-        .calledWith('https://api.spotify.com/v1/search?q=beatles&type=album');
+        expect(fetchedStub).to.have.been
+          .calledWith('https://api.spotify.com/v1/search?q=beatles&type=album');
+      });
+      context('passing more than one type', () => {
+        const artistsAndAlbum = search('beatles', ['artist', 'album']);
+
+        expect(fetchedStub).to.have.been
+          .calledWith('https://api.spotify.com/v1/search?q=beatles&type=artist,album');
+      });
     });
   });
 });
