@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import sinonStubPromise from 'sinon-stub-promise';
+
 
 import {
   search, searchAlbums, searchArtists, searchTracks, searchPlaylists,
@@ -10,7 +10,6 @@ import {
 global.fetch = require('node-fetch');
 
 chai.use(sinonChai);
-sinonStubPromise(sinon);
 
 describe('Spotify Wrapper', () => {
   // search (generic) - + de 1 tipo
@@ -42,9 +41,11 @@ describe('Spotify Wrapper', () => {
 
   describe('Generic Search', () => {
     let fetchedStub;
+    let promise;
 
     beforeEach(() => {
       fetchedStub = sinon.stub(global, 'fetch');
+      promise = fetchedStub.resolves({ json: () => { 'json'; } });
     });
 
     afterEach(() => {
@@ -60,12 +61,10 @@ describe('Spotify Wrapper', () => {
     it('should receive the correct url to fetch', () => {
       context('passing one type', () => {
         const artists = search('beatles', 'artist');
-
         expect(fetchedStub).to.have.been
           .calledWith('https://api.spotify.com/v1/search?q=beatles&type=artist');
 
         const albums = search('beatles', 'album');
-
         expect(fetchedStub).to.have.been
           .calledWith('https://api.spotify.com/v1/search?q=beatles&type=album');
       });
@@ -74,6 +73,15 @@ describe('Spotify Wrapper', () => {
 
         expect(fetchedStub).to.have.been
           .calledWith('https://api.spotify.com/v1/search?q=beatles&type=artist,album');
+      });
+    });
+
+    it('should return the JSON data from the promise', () => {
+      promise.resolves({ body: 'json' });
+      const artists = search('beatles', 'artist');
+
+      artists.then((data) => {
+        expect(data).to.be.eql({ body: 'json' });
       });
     });
   });
