@@ -62,17 +62,23 @@ describe('Spotify Wrapper', () => {
       context('passing one type', () => {
         const artists = search('beatles', 'artist');
         expect(fetchedStub).to.have.been
-          .calledWith('https://api.spotify.com/v1/search?q=beatles&type=artist');
+          .calledWith(
+            'https://api.spotify.com/v1/search?q=beatles&type=artist',
+          );
 
         const albums = search('beatles', 'album');
         expect(fetchedStub).to.have.been
-          .calledWith('https://api.spotify.com/v1/search?q=beatles&type=album');
+          .calledWith(
+            'https://api.spotify.com/v1/search?q=beatles&type=album',
+          );
       });
       context('passing more than one type', () => {
         const artistsAndAlbum = search('beatles', ['artist', 'album']);
 
         expect(fetchedStub).to.have.been
-          .calledWith('https://api.spotify.com/v1/search?q=beatles&type=artist,album');
+          .calledWith(
+            'https://api.spotify.com/v1/search?q=beatles&type=artist,album',
+          );
       });
     });
 
