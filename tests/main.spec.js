@@ -4,19 +4,32 @@ import sinonChai from 'sinon-chai';
 
 
 import {
-  search, searchAlbums, searchArtists, searchTracks, searchPlaylists,
+  search, searchArtists, searchAlbums, searchTracks, searchPlaylists,
 } from '../src/main';
 
 global.fetch = require('node-fetch');
 
 chai.use(sinonChai);
 
+// search (generic) - + de 1 tipo
+// searchAlbums
+// searchArtists
+// searchTracks
+// searchPlaylists
+
 describe('Spotify Wrapper', () => {
-  // search (generic) - + de 1 tipo
-  // searchAlbums
-  // searchArtists
-  // searchTracks
-  // searchPlaylists
+  let fetchedStub;
+  let promise;
+
+  beforeEach(() => {
+    fetchedStub = sinon.stub(global, 'fetch');
+    promise = fetchedStub.resolves({ json: () => { 'json'; } });
+  });
+
+  afterEach(() => {
+    fetchedStub.restore();
+  });
+
   describe('smoke tests', () => {
     it('should exist the search method', () => {
       expect(search).to.exist;
@@ -40,18 +53,6 @@ describe('Spotify Wrapper', () => {
   });
 
   describe('Generic Search', () => {
-    let fetchedStub;
-    let promise;
-
-    beforeEach(() => {
-      fetchedStub = sinon.stub(global, 'fetch');
-      promise = fetchedStub.resolves({ json: () => { 'json'; } });
-    });
-
-    afterEach(() => {
-      fetchedStub.restore();
-    });
-
     it('should call fetch function', () => {
       const artists = search();
 
@@ -89,6 +90,102 @@ describe('Spotify Wrapper', () => {
       artists.then((data) => {
         expect(data).to.be.eql({ body: 'json' });
       });
+    });
+  });
+
+  describe('searchArtists', () => {
+    it('should call fetch function', () => {
+      const artists = searchArtists('beatles');
+      expect(fetchedStub).to.have.been.calledOnce;
+    });
+
+    it('should call fetch with the correct URL', () => {
+      const artist = searchArtists('beatles');
+      artist.then((data) => {
+        expect(data).to.have.been.calledWith(
+          'https://api.spotify/v1/search?q=beatles&type=artist',
+        );
+      }).catch((err) => err);
+
+
+      const artist2 = searchArtists('dylan');
+      artist2.then((data) => {
+        expect(data).to.have.been.calledWith(
+          'https://api.spotify/v1/search?q=dylan&type=artist',
+        );
+      }).catch((err) => err);
+    });
+  });
+
+  describe('searchAlbums', () => {
+    it('should call fetch function', () => {
+      const albums = searchAlbums('dookie');
+      expect(fetchedStub).to.have.been.calledOnce;
+    });
+
+    it('should call fetch with the correct URL', () => {
+      const albums = searchAlbums('dookey');
+      albums.then((data) => {
+        expect(data).to.have.been.calledWith(
+          'https://api.spotify/v1/search?q=dookey&type=album',
+        );
+      }).catch((err) => err);
+
+
+      const albums2 = searchAlbums('one');
+      albums2.then((data) => {
+        expect(data).to.have.been.calledWith(
+          'https://api.spotify/v1/search?q=one&type=album',
+        );
+      }).catch((err) => err);
+    });
+  });
+
+  describe('searchTracks', () => {
+    it('should call fetch function', () => {
+      const tracks = searchTracks('dookie');
+      expect(fetchedStub).to.have.been.calledOnce;
+    });
+
+    it('should call fetch with the correct URL', () => {
+      const tracks = searchTracks('dookey');
+      tracks.then((data) => {
+        expect(data).to.have.been.calledWith(
+          'https://api.spotify/v1/search?q=dookey&type=track',
+        );
+      }).catch((err) => err);
+
+
+      const tracks2 = searchTracks('one');
+      tracks2.then((data) => {
+        expect(data).to.have.been.calledWith(
+          'https://api.spotify/v1/search?q=one&type=track',
+        );
+      }).catch((err) => err);
+    });
+  });
+
+  describe('searchPlaylists', () => {
+    it('should call fetch function', () => {
+      const playlists = searchPlaylists('dookie');
+      expect(fetchedStub).to.have.been.calledOnce;
+    });
+
+    it('should call fetch with the correct URL', () => {
+      const playlists = searchPlaylists('dookey');
+      playlists.then((data) => {
+        expect(data).to.have.been.calledWith(
+          'https://api.spotify/v1/search?q=dookey&type=playlist',
+        );
+      }).catch((err) => err);
+
+
+      const playlists2 = searchPlaylists('one');
+      playlists2.then((data) => {
+        expect(data).to.have.been.calledWith(
+          'https://api.spotify/v1/search?q=one&type=playlist',
+        );
+      }).catch((err) => err);
     });
   });
 });
