@@ -17,7 +17,7 @@ chai.use(sinonChai);
 // searchTracks
 // searchPlaylists
 
-describe('Spotify Wrapper', () => {
+describe('Search', () => {
   let fetchedStub;
   let promise;
 
@@ -64,13 +64,13 @@ describe('Spotify Wrapper', () => {
         const artists = search('beatles', 'artist');
         expect(fetchedStub).to.have.been
           .calledWith(
-            'https://api.spotify.com/v1/search?q=beatles&type=artist',
+            'https://open.spotify.com/search?q=beatles&type=artist',
           );
 
         const albums = search('beatles', 'album');
         expect(fetchedStub).to.have.been
           .calledWith(
-            'https://api.spotify.com/v1/search?q=beatles&type=album',
+            'https://open.spotify.com/search?q=beatles&type=album',
           );
       });
       context('passing more than one type', () => {
@@ -78,7 +78,7 @@ describe('Spotify Wrapper', () => {
 
         expect(fetchedStub).to.have.been
           .calledWith(
-            'https://api.spotify.com/v1/search?q=beatles&type=artist,album',
+            'https://open.spotify.com/search?q=beatles&type=artist,album',
           );
       });
     });
@@ -101,6 +101,7 @@ describe('Spotify Wrapper', () => {
 
     it('should call fetch with the correct URL', () => {
       const artist = searchArtists('beatles');
+
       artist.then((data) => {
         expect(data).to.have.been.calledWith(
           'https://api.spotify/v1/search?q=beatles&type=artist',

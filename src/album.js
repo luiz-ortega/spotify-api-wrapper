@@ -1,5 +1,13 @@
-export const getAlbum = (id) => fetch(
-  `https://open.spotify.com/album/${id}`,
-).then((data) => data);
+import { API_URL } from './config';
 
-export const getAlbumTracks = () => {};
+export const getAlbum = (id) => fetch(
+  `${API_URL}/album/${id}`,
+);
+
+export const getAlbums = (albums) => fetch(
+  `${API_URL}/albums/?ids=${albums}`,
+);
+
+export const getAlbumTracks = (id) => fetch(
+  `${API_URL}/album/${id}/tracks`,
+);
