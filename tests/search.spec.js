@@ -5,7 +5,7 @@ import sinonChai from 'sinon-chai';
 
 import {
   search, searchArtists, searchAlbums, searchTracks, searchPlaylists,
-} from '../src/main';
+} from '../src/search';
 
 global.fetch = require('node-fetch');
 
