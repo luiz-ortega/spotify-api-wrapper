@@ -1,7 +1,7 @@
-import { API_URL } from './config';
+import { API_URL, HEADERS } from './config';
 
 export const search = (query, type) => fetch(
-  `${API_URL}/search?q=${query}&type=${type}`,
+  `${API_URL}/search?q=${query}&type=${type}`, HEADERS,
 );
 
 export const searchArtists = (query) => search(query, 'artist');
